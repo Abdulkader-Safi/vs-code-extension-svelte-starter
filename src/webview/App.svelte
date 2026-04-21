@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Router, { link, location as currentRoute } from "svelte-spa-router";
+    import Router, { link, router } from "svelte-spa-router";
     import NotificationPage from "./pages/NotificationPage.svelte";
     import DirectoryListPage from "./pages/DirectoryListPage.svelte";
 
@@ -28,7 +28,7 @@
                 <a
                     use:link
                     href={item.path}
-                    class="px-4 py-1.5 text-sm hover:bg-vscode-list-hover {$currentRoute ===
+                    class="px-4 py-1.5 text-sm hover:bg-vscode-list-hover {router.location ===
                     item.path
                         ? 'bg-vscode-list-active-bg text-vscode-list-active-fg'
                         : ''}"
