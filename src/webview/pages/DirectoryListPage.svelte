@@ -39,52 +39,52 @@
   });
 </script>
 
-<div class="max-w-4xl mx-auto">
-  <h1 class="mb-6 text-3xl font-bold">Directory Contents</h1>
+<div class="max-w-3xl p-6">
+  <header class="mb-6">
+    <h1 class="mb-1 text-xl font-semibold">Directory</h1>
+    <p class="text-sm text-vscode-description">
+      Contents of the current workspace root, fetched via
+      <code class="px-1 py-0.5 rounded font-mono text-xs bg-vscode-code-bg">vscode.workspace.fs.readDirectory</code>.
+    </p>
+  </header>
 
-  <div class="p-6 bg-gray-800 rounded-lg shadow-lg">
-    {#if directoryData}
-      {#if directoryData.error}
-        <div class="p-4 border border-red-700 rounded-md bg-red-900/30">
-          <p class="text-red-400">{directoryData.error}</p>
-        </div>
-      {:else}
-        {#if directoryData.path}
-          <div class="p-3 mb-4 bg-gray-700 rounded-md">
-            <p class="text-sm text-gray-300">
-              <span class="font-medium">Path:</span>
-              <code class="text-blue-400">{directoryData.path}</code>
-            </p>
-          </div>
-        {/if}
-
-        {#if directoryData.contents && directoryData.contents.length > 0}
-          <div class="space-y-2">
-            <h3 class="mb-3 text-lg font-medium">
-              Items ({directoryData.contents.length})
-            </h3>
-            <div class="overflow-hidden bg-gray-700 rounded-md">
-              {#each directoryData.contents as item, index (index)}
-                <div
-                  class="flex items-center px-4 py-3 transition-colors border-b border-gray-600 last:border-b-0 hover:bg-gray-600"
-                >
-                  <span class="mr-3 text-xl">
-                    {item.type === "directory" ? "📁" : "📄"}
-                  </span>
-                  <span class="flex-1 font-medium">{item.name}</span>
-                  <span class="text-xs text-gray-400 uppercase">
-                    {item.type}
-                  </span>
-                </div>
-              {/each}
-            </div>
-          </div>
-        {:else}
-          <div class="p-4 bg-gray-700 rounded-md">
-            <p class="text-gray-400">Directory is empty</p>
-          </div>
-        {/if}
-      {/if}
+  <div class="flex items-center gap-3 mb-4">
+    <button
+      type="button"
+      onclick={handleLoadDirectory}
+      disabled={loading}
+      class="px-3 py-1 text-sm rounded-sm bg-vscode-button-secondary-bg text-vscode-button-secondary-fg hover:bg-vscode-button-secondary-hover focus:outline-2 focus:outline-vscode-focus disabled:opacity-50"
+    >
+      {loading ? "Refreshing…" : "Refresh"}
+    </button>
+    {#if directoryData?.path}
+      <code class="flex-1 font-mono text-xs truncate text-vscode-description">
+        {directoryData.path}
+      </code>
     {/if}
   </div>
+
+  {#if directoryData?.error}
+    <div class="p-3 text-sm rounded-sm bg-vscode-code-bg text-vscode-error">
+      {directoryData.error}
+    </div>
+  {:else if directoryData?.contents && directoryData.contents.length > 0}
+    <div class="border rounded-sm border-vscode-border">
+      {#each directoryData.contents as item, i (i)}
+        <div
+          class="flex items-center px-3 py-1 text-sm border-b last:border-b-0 border-vscode-border hover:bg-vscode-list-hover"
+        >
+          <span class="mr-2 text-base leading-none">
+            {item.type === "directory" ? "📁" : "📄"}
+          </span>
+          <span class="flex-1 truncate">{item.name}</span>
+          <span class="ml-2 text-[10px] uppercase tracking-wide text-vscode-description">
+            {item.type}
+          </span>
+        </div>
+      {/each}
+    </div>
+  {:else if directoryData && !loading}
+    <p class="text-sm text-vscode-description">Directory is empty.</p>
+  {/if}
 </div>
